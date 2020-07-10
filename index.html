@@ -3,10 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
     <title>WeatherBuddy</title>
   </head>
   <body>
-    <main></main>
+    <header>
+      <h1>WeatherBuddy</h1>
+      <form name="location" id="location">
+        <input type="text" placeholder="Enter a city (or city, state / city, country code)" />
+        <button type="submit">(search icon goes here)</button>
+      </form>
+      <button id="get-location" class="invisible">Use Current Location</button>
+    </header>
+    <main class="container">
+      <div class="row">
+        <section id="previous-locations" class="col s3"></section>
+        <h2>Previous Searches</h2>
+        <section id="current-weather-container" class="col s9"></section>
+      </div>
+      <div class="row">
+        <section id="five-day-forecast" class="col s12"></section>
+      </div>
+    </main>
     <script src="assets/scripts/script.js" type="module"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   </body>
 </html>

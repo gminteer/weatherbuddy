@@ -22,20 +22,22 @@
             <i class="material-icons">close</i>
           </div>
         </form>
-        <button class="btn-floating btn-large halfway-fab waves-effect waves-light hide" id="get-location">
+        <button class="btn-floating btn-large halfway-fab waves-effect waves-light" id="get-location">
           <i class="material-icons left">my_location</i>
         </button>
       </div>
     </nav>
     <div class="row">
-      <div class="col s2">
-        <div class="card z-depth-2" id="previous-searches-container" class="hide"></div>
+      <div class="col s3">
+        <div class="card z-depth-2" id="previous-searches-container">
+          <span class="card-title">Previous Searches</span>
+        </div>
       </div>
-      <div class="col s10 center">
+      <div class="col s9">
         <div class="card z-depth-2" id="current-weather-container"></div>
-        <div class="card z-depth-2" id="five-day-container"></div>
       </div>
     </div>
+    <div class="row" id="five-day-container"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="assets/scripts/script.js" type="module"></script>

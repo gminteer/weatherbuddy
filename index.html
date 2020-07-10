@@ -4,29 +4,42 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+    <link rel="stylesheet" href="assets/css/weather-icons.min.css" />
+    <link rel="stylesheet" href="assets/css/weather-icons-wind.min.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
     <title>WeatherBuddy</title>
   </head>
   <body>
-    <header>
-      <h1>WeatherBuddy</h1>
-      <form name="location" id="location">
-        <input type="text" placeholder="Enter a city (or city, state / city, country code)" />
-        <button type="submit">(search icon goes here)</button>
-      </form>
-      <button id="get-location" class="invisible">Use Current Location</button>
-    </header>
-    <main class="container">
-      <div class="row">
-        <section id="previous-locations" class="col s3"></section>
-        <h2>Previous Searches</h2>
-        <section id="current-weather-container" class="col s9"></section>
+    <nav>
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo center">WeatherBuddy</a>
+        <form name="location" id="location">
+          <div class="input-field">
+            <input id="search" type="search" placeholder="Location" required />
+            <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+            <i class="material-icons">close</i>
+          </div>
+        </form>
+        <button class="btn-floating btn-large halfway-fab waves-effect waves-light" id="get-location">
+          <i class="material-icons left">my_location</i>
+        </button>
       </div>
-      <div class="row">
-        <section id="five-day-forecast" class="col s12"></section>
+    </nav>
+    <div class="row">
+      <div class="col s3">
+        <div class="card z-depth-2" id="previous-searches-container">
+          <span class="card-title">Previous Searches</span>
+        </div>
       </div>
-    </main>
-    <script src="assets/scripts/script.js" type="module"></script>
+      <div class="col s9">
+        <div class="card z-depth-2" id="current-weather-container"></div>
+      </div>
+    </div>
+    <div class="row" id="five-day-container"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="assets/scripts/script.js" type="module"></script>
   </body>
 </html>

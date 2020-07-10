@@ -1,6 +1,5 @@
 /* global moment */
 import {el, mount, setChildren} from 'https://redom.js.org/redom.es.min.js';
-const API_KEY = '***REMOVED***'; // having this exposed is a Bad Idea®
 const data = JSON.parse(localStorage.getItem('weatherBuddyData')) || {lastReq: {}, previousSearches: []};
 // The API supports metric or imperial units, but the user gets to choose metric or imperial so might as well just
 // accept their default units (kelvin and meters/sec)

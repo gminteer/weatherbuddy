@@ -1,12 +1,12 @@
 import { el, mount, setChildren } from 'https://redom.js.org/redom.es.min.js';
 
 const API_KEY = '***REMOVED***'; // having this exposed is a Bad Idea®
-const data = JSON.parse(localStorage.getItem('weatherBuddyData')) || { lastReq: {} };
+const data = JSON.parse(localStorage.getItem('weatherBuddyData')) || { lastReq: {}, previousSearches: [] };
 
-// The API supports requesting fahrenheit/celsius directly, but doing it locally cuts down on potential API hits
+// The API supports metric or imperial units, but the user gets to choose metric or imperial so might as well just
+// accept their default units (kelvin and meters/sec)
 const kelvinToFahrenheit = (tempK) => ((tempK - 273.15) * 9) / 5 + 32;
 const kelvinToCelsius = (tempK) => tempK - 273.15;
-// The API also supports requesting speeds in mph instead of meters/sec, but etc. etc. whatever
 const metricSpeedToMph = (metric) => metric * 2.237;
 
 const currentContainer = document.querySelector('#current-weather-container');
@@ -36,6 +36,7 @@ function renderFiveDay(fiveDay) {
 }
 
 function renderWeatherData(current, fiveDay) {
+  debugger;
   const titleEl = el(
     'div.card-title.center',
     `${current.name} - ${moment.unix(current.dt).format('MMM DD, YYYY hh:mma')}`
@@ -77,50 +78,63 @@ function renderPreviousSearches() {
   setChildren(previousSeachesContainer, searchContainer);
 }
 
-async function fetchWeatherData(locationQuery) {
-  const endPoints = {
-    current: 'weather',
-    fiveDay: 'forecast',
-  };
-  const apiUrl = `https://api.openweathermap.org/data/2.5/{endpoint}?${locationQuery}&appid=${API_KEY}`;
+async function fetchGeolocation(search) {
+  debugger;
+  let searchString;
+  if (search.lat) searchString = `${search.lat},${search.lon}`;
+  else searchString = search;
+  const geolocationApiUrl = `https://geocode.xyz/${searchString}?json=1`;
+  const response = await fetch(geolocationApiUrl);
+  if (!response.ok) {
+    console.error(`"${searchString}" resulted in server response ${response.status}: ${response.statusText}`);
+    return;
+  }
+  const data = await response.json();
+  const out = { lat: data.latt, lon: data.longt };
+  // reverse geolocating has a different output
+  if (search.lat) out.name = data.city;
+  else out.name = data.standard.city;
+  return out;
+}
+
+async function fetchWeatherData(location) {
+  if (data.lastReq[location.name]) {
+    // don't hit the API for the same location more than once every 15 minutes
+    const lastReq = data.lastReq[location.name];
+    const timeStamp = moment(lastReq.timeStamp);
+    if (moment.duration(moment().diff(timeStamp)).minutes() <= 15) {
+      return renderWeatherData(lastReq.weatherData);
+    }
+  }
+  const locationQuery = `lat=${location.lat}&lon=${location.lon}`;
+  const weatherApiUrl = `https://api.openweathermap.org/data/2.5/onecall?${locationQuery}&appid=${API_KEY}`;
   const reqData = {
     timeStamp: moment(),
   };
-  if (!data.lastReq) data.lastReq = {}; // can remove this after one run
-  if (data.lastReq[locationQuery]) {
-    const lastReq = data.lastReq[locationQuery];
-    const timeStamp = moment(lastReq.timeStamp);
-    if (moment.duration(moment().diff(timeStamp)).minutes() <= 15) {
-      // don't hit the API for the same location more than once every 15 minutes
-      return renderWeatherData(lastReq.current, lastReq.fiveDay);
-    }
-  }
-  let response = await fetch(apiUrl.replace('{endpoint}', endPoints.current));
+  let response = await fetch(weatherApiUrl);
   if (!response.ok) {
-    console.error(`something went wrong :( -- ${locationQuery} resulted in ${response.status}: ${response.statusText}`);
+    console.error(`"${locationQuery}" resulted in ${response.status}: ${response.statusText}`);
     return;
   }
-  reqData.current = await response.json();
-  response = await fetch(apiUrl.replace('{endpoint}', endPoints.fiveDay));
-  reqData.fiveDay = await response.json();
-  data.lastReq[locationQuery] = reqData;
-  if (!data.previousSearches) data.previousSearches = [];
-  if (!data.previousSearches.includes(reqData.current.name)) {
-    data.previousSearches.push(reqData.current.name);
+  reqData.location = location;
+  reqData.weatherData = await response.json();
+  data.lastReq[location.name] = reqData;
+  if (!data.previousSearches.includes(location.name)) {
+    data.previousSearches.push(location.name);
     if (data.previousSearches.length > 12) data.previousSearches.shift();
   }
   localStorage.setItem('weatherBuddyData', JSON.stringify(data));
-  renderWeatherData(reqData.current, reqData.fiveDay);
+  renderWeatherData(reqData.weatherData);
   renderPreviousSearches();
 }
 
-function formSubmitHandler(event) {
-  const inputEl = event.target.querySelector('input[type=search');
+async function formSubmitHandler(event) {
+  const inputEl = event.target.querySelector('input[type=search]');
   event.preventDefault();
   const input = inputEl.value.trim().replace(/\s/g, ' ');
-  const locationQuery = `q=${input}`;
-  fetchWeatherData(locationQuery);
   inputEl.value = '';
+  const location = await fetchGeolocation(input);
+  if (location) fetchWeatherData(location);
 }
 document.querySelector('#location').addEventListener('submit', formSubmitHandler);
 
@@ -129,8 +143,7 @@ if (navigator.geolocation) {
   getLocationBtn.classList.remove('hide');
   getLocationBtn.addEventListener('click', () => {
     navigator.geolocation.getCurrentPosition(({ coords }) => {
-      const locationQuery = `lat=${coords.latitude}&lon=${coords.longitude}`;
-      fetchWeatherData(locationQuery);
+      fetchGeolocation({ lat: coords.latitude, lon: coords.longitude }).then((location) => fetchWeatherData(location));
     });
   });
 }
@@ -138,6 +151,6 @@ if (data.previousSearches.length > 0) {
   previousSeachesContainer.classList.remove('hide');
   renderPreviousSearches();
   previousSeachesContainer.addEventListener('click', (event) => {
-    fetchWeatherData(`q=${event.target.textContent}`);
+    fetchWeatherData(data.lastReq[event.target.textContent].location);
   });
 }

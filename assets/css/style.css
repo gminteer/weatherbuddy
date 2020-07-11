@@ -88,6 +88,7 @@ ul.collection {
   width: 80%;
   border: 2px solid black;
   border-radius: 0.75em;
+  box-shadow: 0 0.25rem 0.5rem 0 rgba(0, 0, 0, 0.25);
 }
 li.collection-item {
   list-style-type: none;
@@ -122,7 +123,7 @@ li.collection-item {
   margin-bottom: 1.5rem;
 }
 .card h2 {
-  margin-bottom: 0.15rem;
+  margin: 0.35rem;
   text-transform: uppercase;
 }
 .card h4 {
@@ -165,6 +166,25 @@ li.collection-item {
 }
 .wind-icon {
   font-size: 1.25rem;
+}
+#uv-index {
+  font-weight: bold;
+  font
+}
+.uv-low {
+  color: green;
+}
+.uv-moderate {
+  color: yellow;
+}
+.uv-high {
+  color: orange;
+}
+.uv-very-high {
+  color: red;
+}
+.uv-extreme {
+  color: violet;
 }
 .modal {
   position: fixed;

@@ -43,6 +43,7 @@ function renderFiveDay(dailyWeather) {
   const containerEl = el('.card-row');
   for (let i = 1; i < 6; i++) {
     const day = dailyWeather[i];
+    // skipping the first day because it's today's weather
     const headerEl = el('h3', moment.unix(day.dt).format('MM/DD'));
     const iconEl = el(`i.wi.wi-owm-${day.weather[0].id}.med-icon`);
     const bodyData = {
@@ -68,9 +69,17 @@ function renderWeatherData(locationName, weatherData) {
       `${metricSpeedToMph(current.wind_speed).toFixed(2)} MPH`,
       el(`i.wi.wi-wind.from-${current.wind_deg}.wind-icon`),
     ],
-    'UV Index': el('span.uv-index', current.uvi),
+    'UV Index': el('span#uv-index', current.uvi),
   };
   const bodyEl = renderWeatherCardBody(bodyData);
+  const uvIndex = bodyEl.querySelector('#uv-index');
+  const uvi = current.uvi;
+  if (uvi <= 2) uvIndex.classList.add('uv-low');
+  else if (uvi <= 5) uvIndex.classList.add('uv-moderate');
+  else if (uvi <= 7) uvIndex.classList.add('uv-high');
+  else if (uvi <= 8) uvIndex.classList.add('uv-very-high');
+  else uvIndex.classList.add('uv-extreme');
+
   setChildren(currentContainer, renderWeatherCard(headerEl, iconEl, bodyEl));
   renderFiveDay(weatherData.daily);
 }

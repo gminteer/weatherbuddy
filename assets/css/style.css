@@ -60,9 +60,11 @@ header i.material-icons {
   flex-grow: 1;
 }
 #change-api-key {
-  height: 50%;
   padding: 0.1rem;
-  margin: 0.5rem;
+  margin: 0.2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 #previous-searches-container {
   display: flex;

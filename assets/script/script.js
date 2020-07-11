@@ -17,6 +17,7 @@ const apiKeyContainer = document.querySelector('#api-key-container');
 const apiKeyBtn = document.querySelector('#change-api-key');
 const apiKeyPrompt = document.querySelector('#api-key-prompt');
 const apiFormCancel = document.querySelector('#api-form-cancel');
+const apiKeyForm = document.querySelector('#api-key-form');
 
 function renderWeatherCardBody(bodyData) {
   const bodyEl = el('.card-body');
@@ -185,13 +186,13 @@ function showApiKeyForm() {
   apiKeyContainer.classList.remove('hide');
 }
 
-document.addEventListener('submit', (event) => {
+apiKeyForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const input = event.target.querySelector('#api-key-form input').value.trim();
   if (input) {
     data.apiKey = input;
     saveData();
-    apiKeyPrompt.classList.add('hide');
+    apiKeyContainer.classList.add('hide');
   }
 });
 apiKeyBtn.addEventListener('click', () => {

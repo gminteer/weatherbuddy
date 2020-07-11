@@ -4,6 +4,11 @@
   box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
 }
+::placeholder {
+  font-style: italic;
+  font-weight: bold;
+  padding-left: 1.25rem;
+}
 .hide {
   display: none;
 }
@@ -23,6 +28,7 @@ header {
 }
 header a {
   text-decoration: none;
+  color: white;
 }
 header h1 {
   padding: 0.75rem;
@@ -89,7 +95,8 @@ li.collection-item {
   border-left: 1px solid black;
   border-right: 1px solid black;
   padding: 0.5rem;
-  margin: 0.5rem;
+  margin: 0.25rem;
+  text-transform: uppercase;
 }
 #current-weather-container,
 #five-day-container,
@@ -108,9 +115,7 @@ li.collection-item {
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 0.25rem 0.5rem 0 rgba(0, 0, 0, 0.25);
-  margin-bottom: 0.5rem;
-  margin-left: 0.1rem;
-  margin-right: 0.1rem;
+  margin: 0.5rem 0.2rem;
 }
 #current-weather-container .card {
   width: 55%;
@@ -118,6 +123,7 @@ li.collection-item {
 }
 .card h2 {
   margin-bottom: 0.15rem;
+  text-transform: uppercase;
 }
 .card h4 {
   display: inline;
@@ -150,11 +156,10 @@ li.collection-item {
 .big-icon {
   font-size: 12rem;
   text-align: center;
-  margin-top: 1.3rem;
-  margin-bottom: 2.25rem;
+  margin: 2.5rem;
 }
 .med-icon {
-  margin: 1rem 0;
+  margin: 1rem;
   font-size: 2.5rem;
   text-align: center;
 }
@@ -178,11 +183,19 @@ li.collection-item {
 }
 .modal-content h2 {
   display: inline;
+  padding-left: 2rem;
 }
 .modal-content .card-title {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: baseline;
+}
+#api-key-prompt {
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 15%;
+  text-align: center;
 }
 .modal-content form {
   width: 100%;
@@ -200,6 +213,7 @@ li.collection-item {
   display: flex;
   flex-direction: row;
   width: 100%;
+  margin: 0.2rem;
 }
 .modal-content input {
   flex-grow: 1;
@@ -210,4 +224,19 @@ li.collection-item {
 .modal-content button {
   padding: 0.5rem;
   margin-right: 0.2rem;
+}
+/*Media queries*/
+@media (hover: hover) {
+  li.collection-item:hover {
+    border-color: blue;
+    color: blue;
+    transition: ease-in-out;
+    transition-duration: 0.6s;
+    cursor: pointer;
+  }
+  button:hover i {
+    color: blue;
+    transition: ease-in-out;
+    transition-duration: 0.6s;
+  }
 }

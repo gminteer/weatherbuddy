@@ -143,7 +143,7 @@ async function fetchWeatherData(location) {
   data.lastReq[location.name] = reqData;
   if (!data.previousSearches.includes(location.name)) {
     data.previousSearches.push(location.name);
-    if (data.previousSearches.length > 12) data.previousSearches.shift();
+    if (data.previousSearches.length > 16) data.previousSearches.shift();
   }
   saveData();
   renderWeatherData(reqData.location.name, reqData.weatherData);

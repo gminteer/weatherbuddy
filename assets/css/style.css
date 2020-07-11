@@ -104,6 +104,7 @@ li.collection-item {
 .card-row {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
 }
@@ -169,7 +170,6 @@ li.collection-item {
 }
 #uv-index {
   font-weight: bold;
-  font
 }
 .uv-low {
   color: green;

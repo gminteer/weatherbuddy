@@ -1,0 +1,3 @@
+- "Better" error handling (i.e I should be throwing up some kind of toast or tooltip on an error instead of console.error()ing it)
+- I kinda want the background picture to either just be a random stock "weather" picture or something picked based on the OpenWeatherMap id for whatever weather was just searched for.
+- I'll have to look but I think I've hit all the MVP bootcamp acceptance criteria.

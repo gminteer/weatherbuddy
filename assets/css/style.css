@@ -1,12 +1,136 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+body {
+  background-image: url('../img/background.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: top;
+}
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  background-color: rgba(0, 0, 0, 0.6);
+  height: 3rem;
+}
+header h1 {
+  padding-left: 0.75rem;
+}
+header i.material-icons {
+  font-size: 2.25rem;
+}
+.location-container {
+  background-color: rgba(0, 0, 0, 0.25);
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.location-container button {
+  width: 3rem;
+}
+#get-location {
+  display: none;
+}
+#location {
+  height: 100%;
+  border: 2px solid black;
+}
+#search {
+  font-size: 1.2rem;
+  height: 100%;
+}
+#location button {
+  float: right;
+  height: 100%;
+}
+#change-api-key {
+  height: 50%;
+  margin-right: 0.75rem;
+}
+ul.collection {
+  background-color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  flex-direction: row;
+}
+li.collection-item {
+  list-style-type: none;
+  padding: 0.5rem;
+  margin: 1rem;
+}
+#current-weather-container,
+#five-day-container,
+.card-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.card {
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 0.25rem solid black;
+  border-radius: 0.5rem 0.5rem 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 0.25rem 0.5rem 0 rgba(0, 0, 0, 0.25);
+  margin-bottom: 0.5rem;
+  margin-left: 0.1rem;
+  margin-right: 0.1rem;
+}
+#current-weather-container .card {
+  width: 55%;
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  margin-bottom: 0.15rem;
+}
+.card h4 {
+  display: inline;
+}
+.card-title {
+  background-color: black;
+  color: white;
+  width: 100%;
+  text-align: center;
+  padding: 0.5rem;
+}
+.card-body {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.label-col,
+.value-col {
+  display: flex;
+  flex-direction: column;
+  padding: 0.3rem;
+}
+.label-col {
+  align-items: flex-end;
+}
+.value-col {
+  align-items: flex-start;
+}
 .big-icon {
   font-size: 12rem;
   text-align: center;
+  margin-top: 1.3rem;
   margin-bottom: 2.25rem;
 }
 .med-icon {
+  margin: 1rem 0;
   font-size: 2.5rem;
   text-align: center;
-  margin-bottom: 1rem;
+}
+.wind-icon {
+  font-size: 1.25rem;
 }
 .modal {
   display: none;

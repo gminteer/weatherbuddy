@@ -17,49 +17,59 @@ const apikeyPrompt = document.querySelector('#api-key-prompt');
 const apikeyForm = document.querySelector('#api-key-form');
 const apikeyBtn = document.querySelector('#change-api-key');
 
+function renderWeatherCardBody(bodyData) {
+  const bodyEl = el('.card-body');
+  const labelColEl = el('.card-body.label-col');
+  const valueColEl = el('.card-body.value-col');
+  for (const label of Object.keys(bodyData)) {
+    const labelEl = el('h4', `${label}:`);
+    mount(labelColEl, labelEl);
+    const valueEl = el('span', bodyData[label]);
+    mount(valueColEl, valueEl);
+  }
+  setChildren(bodyEl, [labelColEl, valueColEl]);
+  return bodyEl;
+}
+function renderWeatherCard(headerEl, iconEl, bodyEl) {
+  const cardEl = el('.card');
+  const titleEl = el('.card-title');
+  setChildren(titleEl, headerEl);
+  setChildren(cardEl, [titleEl, iconEl, bodyEl]);
+  return cardEl;
+}
 function renderFiveDay(dailyWeather) {
-  const containerEl = el('div');
-  for (let i = 0; i < 5; i++) {
+  const containerEl = el('.card-row');
+  for (let i = 1; i < 6; i++) {
     const day = dailyWeather[i];
-    const cardEl = el('div');
-    const titleEl = el('h3', moment.unix(day.dt).format('MM/DD hh:mma'));
-    const cardIcon = el(`i.wi.wi-owm-${day.weather[0].id}.med-icon`);
-    const weatherDetails = el('ul');
-    const temperature = el('li', `Temperature: ${kelvinToFahrenheit(day.temp.day).toFixed(2)}°F`);
-    const humidity = el('li', `Humidity: ${day.humidity}%`);
-    setChildren(weatherDetails, [temperature, humidity]);
-    setChildren(cardEl, [titleEl, cardIcon, weatherDetails]);
-    mount(containerEl, cardEl);
+    const headerEl = el('h3', moment.unix(day.dt).format('MM/DD'));
+    const iconEl = el(`i.wi.wi-owm-${day.weather[0].id}.med-icon`);
+    const bodyData = {
+      Temperature: `${kelvinToFahrenheit(day.temp.day).toFixed(2)}°F`,
+      Humidity: `${day.humidity}%`,
+    };
+    const bodyEl = renderWeatherCardBody(bodyData);
+    mount(containerEl, renderWeatherCard(headerEl, iconEl, bodyEl));
   }
   setChildren(fiveDayContainer, containerEl);
 }
 
 function renderWeatherData(locationName, weatherData) {
   const current = weatherData.current;
-  const cardEl = el('div');
-  const titleEl = el('h2', `${locationName} - ${moment.unix(current.dt).format('MMM DD, hh:mma')}`);
-  const cardIcon = el(`i.wi.wi-owm-${current.weather[0].id}.big-icon`);
-  const weatherDetails = el('ul');
-  let currentCondition;
-  if (current.weather.length > 1)
-    currentCondition = el('li', `${current.weather[0].main} then ${current.weather[1].main}`);
-  else currentCondition = el('li', `${current.weather[0].main}`);
-  const temperature = el(
-    'li',
-    `Temperature: ${kelvinToFahrenheit(current.temp).toFixed(2)}°F (feels like ${kelvinToFahrenheit(
+  const headerEl = [el('h2', locationName), el('h3', moment.unix(current.dt).format('MMM DD, hh:mma'))];
+  const iconEl = el(`i.wi.wi-owm-${current.weather[0].id}.big-icon`);
+  const bodyData = {
+    Temperature: `${kelvinToFahrenheit(current.temp).toFixed(2)}°F (feels like ${kelvinToFahrenheit(
       current.feels_like
-    ).toFixed(2)})`
-  );
-  const humidity = el('li', `Humidity: ${current.humidity}%`);
-  const wind = el('li', [
-    `Wind Speed: ${metricSpeedToMph(current.wind_speed).toFixed(2)} MPH    `,
-    el(`i.wi.wi-wind.from-${current.wind_deg}`, {style: {'font-size': '1.5rem'}}),
-  ]);
-  const uvIndex = el('li', 'UV Index: ', el('span', current.uvi));
-  setChildren(weatherDetails, [currentCondition, temperature, humidity, wind, uvIndex]);
-  setChildren(cardEl, [titleEl, cardIcon, weatherDetails]);
-
-  setChildren(currentContainer, cardEl);
+    ).toFixed(0)}°F)`,
+    Humidity: `${current.humidity}%`,
+    'Wind Speed': [
+      `${metricSpeedToMph(current.wind_speed).toFixed(2)} MPH`,
+      el(`i.wi.wi-wind.from-${current.wind_deg}.wind-icon`),
+    ],
+    'UV Index': el('span.uv-index', current.uvi),
+  };
+  const bodyEl = renderWeatherCardBody(bodyData);
+  setChildren(currentContainer, renderWeatherCard(headerEl, iconEl, bodyEl));
   renderFiveDay(weatherData.daily);
 }
 
@@ -177,7 +187,7 @@ if (!data.apiKey) apikeyPrompt.style.display = 'block';
 
 if (navigator.geolocation) {
   const getLocationBtn = document.querySelector('#get-location');
-  getLocationBtn.classList.remove('hide');
+  getLocationBtn.style.display = 'inline';
   getLocationBtn.addEventListener('click', locationBtnClickListener);
 }
 if (data.previousSearches.length > 0) {

@@ -4,26 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,900;1,100&display=swap">
     <link rel="stylesheet" href="assets/css/weather-icons.min.css" />
     <link rel="stylesheet" href="assets/css/weather-icons-wind.min.css" />
     <link rel="stylesheet" href="assets/css/style.css" />
     <title>WeatherBuddy</title>
   </head>
   <body>
-    <nav>
+    <header>
         <a href="#"><h1>WeatherBuddy</h1></a>
-        <form name="location" id="location">
-          <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-          <input id="search" type="search" placeholder="Location" required />
-          <i class="material-icons">close</i>
-        </form>
-        <button id="get-location">
-          <i class="material-icons">my_location</i>
-        </button>
+        <div class="location-container">
+          <button id="get-location">
+            <i class="material-icons">my_location</i>
+          </button>
+          <form name="location" id="location">
+            <input id="search" type="search" placeholder="Location" required />
+            <button type="submit"><i class="material-icons">search</i></button>
+          </form>
+        </div>
         <button id="change-api-key">Change API key</button>
       </div>
-    </nav>
+    </header>
     <div id="previous-searches-container"></div>
     <div id="current-weather-container"></div>
     <div id="five-day-container"></div>
@@ -32,12 +33,12 @@
       <div class="modal-content">
         <h2>Enter OpenWeatherMap API key</h2>
         <form name="apikey" id="api-key-form">
-          <label for="apikey-input">No API key found in LocalStorage, enter an API key to continue.</label>
+          <label for="api-key-input">No API key found in LocalStorage, enter an API key to continue.</label>
           <input type="text" id="api-key-input" placeholder="Paste API key here">
         </form>
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
-    <script src="assets/scripts/script.js" type="module"></script>
+    <script src="assets/script/script.js" type="module"></script>
   </body>
 </html>

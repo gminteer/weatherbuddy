@@ -14,18 +14,29 @@
     <nav>
         <a href="#"><h1>WeatherBuddy</h1></a>
         <form name="location" id="location">
-          <input id="search" type="search" placeholder="Location" required />
           <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+          <input id="search" type="search" placeholder="Location" required />
           <i class="material-icons">close</i>
         </form>
         <button id="get-location">
           <i class="material-icons">my_location</i>
         </button>
+        <button id="change-api-key">Change API key</button>
       </div>
     </nav>
     <div id="previous-searches-container"></div>
     <div id="current-weather-container"></div>
     <div id="five-day-container"></div>
+    <!-- Modal prompt for OpenWeatherMap API Key -->
+    <div id="api-key-prompt" class="modal">
+      <div class="modal-content">
+        <h2>Enter OpenWeatherMap API key</h2>
+        <form name="apikey" id="api-key-form">
+          <label for="apikey-input">No API key found in LocalStorage, enter an API key to continue.</label>
+          <input type="text" id="api-key-input" placeholder="Paste API key here">
+        </form>
+      </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
     <script src="assets/scripts/script.js" type="module"></script>
   </body>

@@ -1,14 +1,22 @@
 /* global moment */
 import {el, mount, setChildren} from 'https://redom.js.org/redom.es.min.js';
+
 const data = JSON.parse(localStorage.getItem('weatherBuddyData')) || {lastReq: {}, previousSearches: []};
+const saveData = () => localStorage.setItem('weatherBuddyData', JSON.stringify(data));
+
 // The API supports metric or imperial units, but the user gets to choose metric or imperial so might as well just
 // accept their default units (kelvin and meters/sec)
 const kelvinToFahrenheit = (tempK) => ((tempK - 273.15) * 9) / 5 + 32;
 // const kelvinToCelsius = (tempK) => tempK - 273.15;
 const metricSpeedToMph = (metric) => metric * 2.237;
+
 const currentContainer = document.querySelector('#current-weather-container');
 const fiveDayContainer = document.querySelector('#five-day-container');
 const previousSeachesContainer = document.querySelector('#previous-searches-container');
+const apikeyPrompt = document.querySelector('#api-key-prompt');
+const apikeyForm = document.querySelector('#api-key-form');
+const apikeyBtn = document.querySelector('#change-api-key');
+
 function renderFiveDay(dailyWeather) {
   const containerEl = el('div');
   for (let i = 0; i < 5; i++) {
@@ -25,6 +33,7 @@ function renderFiveDay(dailyWeather) {
   }
   setChildren(fiveDayContainer, containerEl);
 }
+
 function renderWeatherData(locationName, weatherData) {
   const current = weatherData.current;
   const cardEl = el('div');
@@ -78,6 +87,10 @@ async function fetchGeolocation(search) {
       setTimeout(fetchGeolocation(search), 1000 * Math.ceil(Math.random() * 5));
   }
   const data = await response.json();
+  if (data.error) {
+    console.error(`"${searchString}" resulted in server response ${data.error.code}: ${data.error.description}`);
+    return;
+  }
   const out = {lat: data.latt, lon: data.longt};
   // reverse geolocating has a different output
   if (search.lat) out.name = data.city;
@@ -86,6 +99,7 @@ async function fetchGeolocation(search) {
 }
 
 async function fetchWeatherData(location) {
+  if (!location) return;
   if (data.lastReq[location.name]) {
     // don't hit the API for the same location more than once every 15 minutes
     const lastReq = data.lastReq[location.name];
@@ -94,7 +108,7 @@ async function fetchWeatherData(location) {
       return renderWeatherData(lastReq.location.name, lastReq.weatherData);
   }
   const locationQuery = `lat=${location.lat}&lon=${location.lon}`;
-  const weatherApiUrl = `https://api.openweathermap.org/data/2.5/onecall?${locationQuery}&appid=${API_KEY}`;
+  const weatherApiUrl = `https://api.openweathermap.org/data/2.5/onecall?${locationQuery}&appid=${data.apiKey}`;
   const reqData = {
     timeStamp: moment(),
   };
@@ -110,29 +124,61 @@ async function fetchWeatherData(location) {
     data.previousSearches.push(location.name);
     if (data.previousSearches.length > 12) data.previousSearches.shift();
   }
-  localStorage.setItem('weatherBuddyData', JSON.stringify(data));
+  saveData();
   renderWeatherData(reqData.location.name, reqData.weatherData);
   renderPreviousSearches();
 }
 
-async function formSubmitHandler(event) {
-  const inputEl = event.target.querySelector('input[type=search]');
+function formSubmitHandler(event) {
   event.preventDefault();
+  const inputEl = event.target.querySelector('input[type=search]');
   const input = inputEl.value.trim().replace(/\s/g, ' ');
   inputEl.value = '';
-  const location = await fetchGeolocation(input);
-  if (location) fetchWeatherData(location);
+  fetchGeolocation(input).then((location) => fetchWeatherData(location));
 }
 document.querySelector('#location').addEventListener('submit', formSubmitHandler);
+
+let lastLocationBtnClick;
+let locationBtnClickDebounce = false;
+function locationBtnClickListener() {
+  if (!lastLocationBtnClick) {
+    lastLocationBtnClick = moment();
+  } else if (locationBtnClickDebounce) {
+    return;
+  } else {
+    // rate limit location button clicks to once every 5 seconds at most
+    const timeDelta = moment.duration(moment().diff(lastLocationBtnClick)).asSeconds;
+    if (timeDelta < 5 && !locationBtnClickDebounce) {
+      setTimeout(locationBtnClickListener, 1000 * (5 - timeDelta));
+      locationBtnClickDebounce = true;
+      return;
+    }
+  }
+  lastLocationBtnClick = moment();
+  locationBtnClickDebounce = false;
+  navigator.geolocation.getCurrentPosition(({coords}) => {
+    fetchGeolocation({lat: coords.latitude, lon: coords.longitude}).then((location) => fetchWeatherData(location));
+  });
+}
+
+apikeyForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const input = event.target.querySelector('input').value.trim();
+  if (input) {
+    data.apiKey = input;
+    saveData();
+    apikeyPrompt.style.display = 'none';
+  }
+});
+apikeyBtn.addEventListener('click', () => {
+  apikeyPrompt.style.display = 'block';
+});
+if (!data.apiKey) apikeyPrompt.style.display = 'block';
 
 if (navigator.geolocation) {
   const getLocationBtn = document.querySelector('#get-location');
   getLocationBtn.classList.remove('hide');
-  getLocationBtn.addEventListener('click', () => {
-    navigator.geolocation.getCurrentPosition(({coords}) => {
-      fetchGeolocation({lat: coords.latitude, lon: coords.longitude}).then((location) => fetchWeatherData(location));
-    });
-  });
+  getLocationBtn.addEventListener('click', locationBtnClickListener);
 }
 if (data.previousSearches.length > 0) {
   previousSeachesContainer.classList.remove('hide');

@@ -13,9 +13,10 @@ const metricSpeedToMph = (metric) => metric * 2.237;
 const currentContainer = document.querySelector('#current-weather-container');
 const fiveDayContainer = document.querySelector('#five-day-container');
 const previousSeachesContainer = document.querySelector('#previous-searches-container');
-const apikeyPrompt = document.querySelector('#api-key-prompt');
-const apikeyForm = document.querySelector('#api-key-form');
-const apikeyBtn = document.querySelector('#change-api-key');
+const apiKeyContainer = document.querySelector('#api-key-container');
+const apiKeyBtn = document.querySelector('#change-api-key');
+const apiKeyPrompt = document.querySelector('#api-key-prompt');
+const apiFormCancel = document.querySelector('#api-form-cancel');
 
 function renderWeatherCardBody(bodyData) {
   const bodyEl = el('.card-body');
@@ -171,23 +172,39 @@ function locationBtnClickListener() {
   });
 }
 
-apikeyForm.addEventListener('submit', (event) => {
+function showApiKeyForm() {
+  let prompt;
+  if (!data.apiKey) {
+    prompt = 'No API key found in LocalStorage, enter an API key to continue.';
+    apiFormCancel.classList.add('hide');
+  } else {
+    prompt = `Current API Key is "${data.apiKey}" -- enter new API key below to change.`;
+    apiFormCancel.classList.remove('hide');
+  }
+  apiKeyPrompt.textContent = prompt;
+  apiKeyContainer.classList.remove('hide');
+}
+
+document.addEventListener('submit', (event) => {
   event.preventDefault();
-  const input = event.target.querySelector('input').value.trim();
+  const input = event.target.querySelector('#api-key-form input').value.trim();
   if (input) {
     data.apiKey = input;
     saveData();
-    apikeyPrompt.style.display = 'none';
+    apiKeyPrompt.classList.add('hide');
   }
 });
-apikeyBtn.addEventListener('click', () => {
-  apikeyPrompt.style.display = 'block';
+apiKeyBtn.addEventListener('click', () => {
+  showApiKeyForm();
 });
-if (!data.apiKey) apikeyPrompt.style.display = 'block';
+apiFormCancel.addEventListener('click', () => {
+  apiKeyContainer.classList.add('hide');
+});
+if (!data.apiKey) showApiKeyForm();
 
 if (navigator.geolocation) {
   const getLocationBtn = document.querySelector('#get-location');
-  getLocationBtn.style.display = 'inline';
+  getLocationBtn.classList.remove('hide');
   getLocationBtn.addEventListener('click', locationBtnClickListener);
 }
 if (data.previousSearches.length > 0) {

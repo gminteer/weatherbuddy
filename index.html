@@ -14,7 +14,7 @@
     <header>
         <a href="#"><h1>WeatherBuddy</h1></a>
         <div class="location-container">
-          <button id="get-location">
+          <button id="get-location" class="hide">
             <i class="material-icons">my_location</i>
           </button>
           <form name="location" id="location">
@@ -22,19 +22,25 @@
             <button type="submit"><i class="material-icons">search</i></button>
           </form>
         </div>
-        <button id="change-api-key">Change API key</button>
+        <button id="change-api-key"><i class="material-icons">settings</i> Change API key</button>
       </div>
     </header>
     <div id="previous-searches-container"></div>
     <div id="current-weather-container"></div>
     <div id="five-day-container"></div>
     <!-- Modal prompt for OpenWeatherMap API Key -->
-    <div id="api-key-prompt" class="modal">
-      <div class="modal-content">
-        <h2>Enter OpenWeatherMap API key</h2>
+    <div id="api-key-container" class="modal hide">
+      <div class="modal-content card">
+        <div class="card-title">
+          <h2>Enter OpenWeatherMap API key</h2>
+          <button id="api-form-cancel"><i class="material-icons">cancel</i></button>
+        </div>
         <form name="apikey" id="api-key-form">
-          <label for="api-key-input">No API key found in LocalStorage, enter an API key to continue.</label>
-          <input type="text" id="api-key-input" placeholder="Paste API key here">
+          <label for="api-key-input" id="api-key-prompt"></label>
+          <div class="form-input">
+            <input type="text" id="api-key-input" placeholder="Paste API key here">
+            <button type="submit">Submit</button>
+          </div>
         </form>
       </div>
     </div>

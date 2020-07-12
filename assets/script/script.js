@@ -58,8 +58,13 @@ function renderFiveDay(dailyWeather) {
 
 function renderWeatherData(locationName, weatherData) {
   const current = weatherData.current;
-  const headerEl = [el('h2', locationName), el('h3', moment.unix(current.dt).format('MMM DD, hh:mma'))];
-  const iconPrefix = moment().isBetween(moment.unix(current.sunrise), moment.unix(current.sunset)) ? 'day' : 'night';
+  const headerEl = [
+    el('h2', locationName),
+    el('h3', moment.unix(current.dt).tz(weatherData.timezone).format('MMM DD, hh:mma')),
+  ];
+  const iconPrefix = moment().utc().isBetween(moment.unix(current.sunrise).utc(), moment.unix(current.sunset).utc())
+    ? 'day'
+    : 'night';
   const iconEl = el(`i.wi.wi-owm-${iconPrefix}-${current.weather[0].id}.big-icon`);
   const bodyData = {
     Temperature: `${kelvinToFahrenheit(current.temp).toFixed(2)}°F (feels like ${kelvinToFahrenheit(

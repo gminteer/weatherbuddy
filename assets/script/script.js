@@ -73,7 +73,7 @@ function renderWeatherData(locationName, weatherData) {
     Humidity: `${current.humidity}%`,
     'Wind Speed': [
       `${metricSpeedToMph(current.wind_speed).toFixed(2)} MPH`,
-      el(`i.wi.wi-wind.from-${current.wind_deg}.wind-icon`),
+      el(`i.wi.wi-wind.from-${current.wind_deg}-deg.wind-icon`),
     ],
     'UV Index': el('span#uv-index', current.uvi),
   };

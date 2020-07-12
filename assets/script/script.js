@@ -24,15 +24,12 @@ const errorTextEl = document.querySelector('#error-span .error-text');
 // draw weather cards
 function renderWeatherCardBody(bodyData) {
   const bodyEl = el('.card-body');
-  const labelColEl = el('.card-body.label-col');
-  const valueColEl = el('.card-body.value-col');
   for (const label of Object.keys(bodyData)) {
     const labelEl = el('h4', `${label}:`);
-    mount(labelColEl, labelEl);
+    mount(bodyEl, labelEl);
     const valueEl = el('span', bodyData[label]);
-    mount(valueColEl, valueEl);
+    mount(bodyEl, valueEl);
   }
-  setChildren(bodyEl, [labelColEl, valueColEl]);
   return bodyEl;
 }
 function renderWeatherCard(headerEl, iconEl, bodyEl) {
@@ -62,7 +59,8 @@ function renderFiveDay(dailyWeather) {
 function renderWeatherData(locationName, weatherData) {
   const current = weatherData.current;
   const headerEl = [el('h2', locationName), el('h3', moment.unix(current.dt).format('MMM DD, hh:mma'))];
-  const iconEl = el(`i.wi.wi-owm-${current.weather[0].id}.big-icon`);
+  const iconPrefix = moment().isBetween(moment.unix(current.sunrise), moment.unix(current.sunset)) ? 'day' : 'night';
+  const iconEl = el(`i.wi.wi-owm-${iconPrefix}-${current.weather[0].id}.big-icon`);
   const bodyData = {
     Temperature: `${kelvinToFahrenheit(current.temp).toFixed(2)}°F (feels like ${kelvinToFahrenheit(
       current.feels_like

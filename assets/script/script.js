@@ -132,9 +132,9 @@ function showError(errorText) {
 }
 
 function updatePreviousSearches() {
-  // it's only two lines but it's logic that probably shouldn't be in fetchWeatherData
+  // it's short, but it's logic that probably shouldn't be in fetchWeatherData
   data.previousSearches.sort((a, b) => moment(data.lastReq[b].timeStamp).diff(moment(data.lastReq[a].timeStamp)));
-  if (data.previousSearches.length > 16) data.previousSearches.pop();
+  if (data.previousSearches.length > 16) delete data.lastReq[data.previousSearches.pop()];
 }
 // get weather data from OpenWeatherMap
 async function fetchWeatherData(location) {
@@ -153,7 +153,7 @@ async function fetchWeatherData(location) {
   };
   const response = await fetch(weatherApiUrl);
   if (!response.ok) {
-    showError(`"${locationQuery}" resulted in ${response.status}: ${response.statusText}`);
+    showError(`${response.status}: ${response.statusText}`);
     return;
   }
   reqData.location = location;

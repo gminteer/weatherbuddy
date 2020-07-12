@@ -29,6 +29,7 @@ header {
   align-items: center;
   background-color: rgba(0, 0, 0, 0.6);
   width: 100%;
+  position: relative;
 }
 header a {
   text-decoration: none;
@@ -62,6 +63,19 @@ header i.material-icons {
 .location-container form input {
   font-size: 1.2rem;
   flex-grow: 1;
+}
+.error {
+  background-color: rgba(128, 0, 0, 0.9);
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  border: 0.15rem solid black;
+  position: absolute;
+  z-index: 1;
+  top: 105%;
+  cursor: pointer;
 }
 #change-api-key {
   padding: 0.1rem;
@@ -252,18 +266,20 @@ li.collection-item {
   li.collection-item {
     color: black;
     border-color: black;
+    transition: ease-in-out;
+    transition-duration: 0.6s;
   }
   li.collection-item:hover {
     border-color: blue;
     color: blue;
+    cursor: pointer;
+  }
+  button i {
     transition: ease-in-out;
     transition-duration: 0.6s;
-    cursor: pointer;
   }
   button:hover i {
     color: blue;
-    transition: ease-in-out;
-    transition-duration: 0.6s;
   }
 }
 @media screen and (min-width: 768px) {

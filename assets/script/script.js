@@ -18,7 +18,10 @@ const apiKeyBtn = document.querySelector('#change-api-key');
 const apiKeyPrompt = document.querySelector('#api-key-prompt');
 const apiFormCancel = document.querySelector('#api-form-cancel');
 const apiKeyForm = document.querySelector('#api-key-form');
+const errorSpan = document.querySelector('#error-span');
+const errorTextEl = document.querySelector('#error-span .error-text');
 
+// draw weather cards
 function renderWeatherCardBody(bodyData) {
   const bodyEl = el('.card-body');
   for (const label of Object.keys(bodyData)) {
@@ -82,6 +85,7 @@ function renderWeatherData(locationName, weatherData) {
   renderFiveDay(weatherData.daily);
 }
 
+// draw previous searches list
 function renderPreviousSearches() {
   const searchContainer = el('ul.collection');
   for (const search of data.previousSearches) {
@@ -91,6 +95,7 @@ function renderPreviousSearches() {
   setChildren(previousSeachesContainer, searchContainer);
 }
 
+// get latitude/longitude/placeName from geocode.xyz
 async function fetchGeolocation(search) {
   let searchString;
   if (search.lat) searchString = `${search.lat},${search.lon}`;
@@ -98,7 +103,7 @@ async function fetchGeolocation(search) {
   const geolocationApiUrl = `https://geocode.xyz/${searchString}?json=1`;
   const response = await fetch(geolocationApiUrl);
   if (!response.ok) {
-    console.error(`"${searchString}" resulted in server response ${response.status}: ${response.statusText}`);
+    showError(`${response.status}: ${response.statusText}`);
     return;
   } else {
     if (response.status === 403)
@@ -107,7 +112,7 @@ async function fetchGeolocation(search) {
   }
   const data = await response.json();
   if (data.error) {
-    console.error(`"${searchString}" resulted in server response ${data.error.code}: ${data.error.description}`);
+    showError(`${data.error.description}`);
     return;
   }
   const out = {lat: data.latt, lon: data.longt};
@@ -117,6 +122,19 @@ async function fetchGeolocation(search) {
   return out;
 }
 
+// show/hide error messgages
+errorSpan.addEventListener('click', () => errorSpan.classList.add('hide'));
+function showError(errorText) {
+  errorTextEl.textContent = errorText;
+  errorSpan.classList.remove('hide');
+}
+
+function updatePreviousSearches() {
+  // it's only two lines but it's logic that probably shouldn't be in fetchWeatherData
+  data.previousSearches.sort((a, b) => moment(data.lastReq[b].timeStamp).diff(moment(data.lastReq[a].timeStamp)));
+  if (data.previousSearches.length > 16) data.previousSearches.pop();
+}
+// get weather data from OpenWeatherMap
 async function fetchWeatherData(location) {
   if (!location) return;
   if (data.lastReq[location.name]) {
@@ -133,17 +151,17 @@ async function fetchWeatherData(location) {
   };
   const response = await fetch(weatherApiUrl);
   if (!response.ok) {
-    console.error(`"${locationQuery}" resulted in ${response.status}: ${response.statusText}`);
+    showError(`"${locationQuery}" resulted in ${response.status}: ${response.statusText}`);
     return;
   }
   reqData.location = location;
   reqData.weatherData = await response.json();
   data.lastReq[location.name] = reqData;
-  if (!data.previousSearches.includes(location.name)) {
-    data.previousSearches.push(location.name);
-    if (data.previousSearches.length > 16) data.previousSearches.shift();
-  }
+  if (!data.previousSearches.includes(location.name)) data.previousSearches.push(location.name);
+  updatePreviousSearches();
   saveData();
+  // hide error box if it's still visible
+  if (!errorSpan.classList.contains('hide')) errorSpan.classList.add('hide');
   renderWeatherData(reqData.location.name, reqData.weatherData);
   renderPreviousSearches();
 }
@@ -180,6 +198,7 @@ function locationBtnClickListener() {
   });
 }
 
+// not hardcoding API keys into something going into a public repository
 function showApiKeyForm() {
   let prompt;
   if (!data.apiKey) {
@@ -210,11 +229,14 @@ apiFormCancel.addEventListener('click', () => {
 });
 if (!data.apiKey) showApiKeyForm();
 
+// display location button if browser supports geolocation requests
 if (navigator.geolocation) {
   const getLocationBtn = document.querySelector('#get-location');
   getLocationBtn.classList.remove('hide');
   getLocationBtn.addEventListener('click', locationBtnClickListener);
 }
+
+// display previous searches if previous searches exist
 if (data.previousSearches.length > 0) {
   previousSeachesContainer.classList.remove('hide');
   renderPreviousSearches();

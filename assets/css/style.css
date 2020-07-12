@@ -146,26 +146,21 @@ li.collection-item {
 }
 .card-body {
   width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
 }
-.label-col,
-.value-col {
-  display: flex;
-  flex-direction: column;
-  padding: 0.3rem;
+.card-body h4,
+.card-body span {
+  margin: 0.25rem;
 }
-.label-col {
-  align-items: flex-end;
-}
-.value-col {
-  align-items: flex-start;
+.card-body h4 {
+  text-align: right;
 }
 .big-icon {
   font-size: 12rem;
   text-align: center;
-  margin: 2.5rem;
+  margin: 3.5rem;
 }
 .med-icon {
   margin: 1rem;

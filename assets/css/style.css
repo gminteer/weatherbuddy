@@ -17,14 +17,18 @@ body {
   background-size: cover;
   background-attachment: fixed;
   background-position: top;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 header {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.6);
-  height: 3rem;
+  width: 100%;
 }
 header a {
   text-decoration: none;
@@ -38,31 +42,25 @@ header i.material-icons {
 }
 .location-container {
   background-color: rgba(0, 0, 0, 0.25);
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  flex-grow: 2;
-}
-.location-container button {
-  width: 3rem;
-}
-#location {
-  height: 100%;
   border: 2px solid black;
-}
-#search {
-  font-size: 1.2rem;
-  height: 100%;
-}
-#location {
   width: 100%;
   display: flex;
   flex-direction: row;
 }
-#location button {
+.location-container button {
+  width: 3rem;
+}
+.location-container form {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.location-container form button {
   float: right;
 }
-#location input {
+.location-container form input {
+  font-size: 1.2rem;
   flex-grow: 1;
 }
 #change-api-key {
@@ -76,7 +74,8 @@ header i.material-icons {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 1em;
+  margin: 1rem;
+  max-width: 85%;
 }
 ul.collection {
   background-color: rgba(255, 255, 255, 0.6);
@@ -85,16 +84,18 @@ ul.collection {
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: baseline;
-  width: 80%;
+  width: 100%;
   border: 2px solid black;
+  padding: 0.2rem 0.5rem;
   border-radius: 0.75em;
   box-shadow: 0 0.25rem 0.5rem 0 rgba(0, 0, 0, 0.25);
 }
 li.collection-item {
   list-style-type: none;
   font-weight: bold;
-  border-left: 1px solid black;
-  border-right: 1px solid black;
+  border-left: 1px solid blue;
+  border-right: 1px solid blue;
+  color: blue;
   padding: 0.5rem;
   margin: 0.25rem;
   text-transform: uppercase;
@@ -119,8 +120,14 @@ li.collection-item {
   box-shadow: 0 0.25rem 0.5rem 0 rgba(0, 0, 0, 0.25);
   margin: 0.5rem 0.2rem;
 }
+#current-weather-container {
+  width: 100%;
+}
+#five-day-container {
+  max-width: 95%;
+}
 #current-weather-container .card {
-  width: 55%;
+  width: 85%;
   margin-bottom: 1.5rem;
 }
 .card h2 {
@@ -247,6 +254,10 @@ li.collection-item {
 }
 /*Media queries*/
 @media (hover: hover) {
+  li.collection-item {
+    color: black;
+    border-color: black;
+  }
   li.collection-item:hover {
     border-color: blue;
     color: blue;
@@ -258,5 +269,17 @@ li.collection-item {
     color: blue;
     transition: ease-in-out;
     transition-duration: 0.6s;
+  }
+}
+@media screen and (min-width: 768px) {
+  #current-weather-container .card {
+    width: 46rem;
+  }
+  .location-container {
+    width: auto;
+    flex-grow: 1;
+  }
+  #change-api-key {
+    order: 3;
   }
 }

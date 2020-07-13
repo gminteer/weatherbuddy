@@ -8,3 +8,4 @@ A simple dashboard for viewing current and upcoming weather conditions at a glan
 
 - Search by location name, or use your current location.
 - Keeps track of your last 16 searched locations for easy repeated searches.
+- Display values in either metric or imperial units.

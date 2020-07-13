@@ -13,7 +13,7 @@
   <body>
     <header>
         <a href="#"><h1>WeatherBuddy</h1></a>
-        <button id="change-api-key"><i class="material-icons">settings</i></button>
+        <button id="settings"><i class="material-icons">settings</i></button>
         <div class="location-container">
           <button id="get-location" class="hide">
             <i class="material-icons">my_location</i>
@@ -32,19 +32,21 @@
     <div id="current-weather-container"></div>
     <div id="five-day-container"></div>
     <!-- Modal prompt for OpenWeatherMap API Key -->
-    <div id="api-key-container" class="modal hide">
+    <div id="settings-container" class="modal hide">
       <div class="modal-content card">
         <div class="card-title">
-          <h2>Enter OpenWeatherMap API key</h2>
-          <button id="api-form-cancel"><i class="material-icons">close</i></button>
+          <h2>Settings</h2>
+          <button id="settings-close"><i class="material-icons">close</i></button>
         </div>
-        <form name="apikey" id="api-key-form">
-          <label for="api-key-input" id="api-key-prompt"></label>
-          <div class="form-input">
-            <input type="text" id="api-key-input" placeholder="Paste API key here...">
-            <button type="submit">Submit</button>
+          <div class="settings">
+            <label for="unit-type">Display values in:</label>
+            <select id="unit-type">
+              <option value="imperial">Imperial</option>
+              <option value="metric">Metric</option>
+            </select>
+            <label for="api-key-input">OpenWeatherMap API key:</label>
+            <input type="text" id="api-key-input" placeholder="Paste API key here..." required>
           </div>
-        </form>
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>

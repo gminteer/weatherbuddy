@@ -6,18 +6,30 @@ const saveData = () => localStorage.setItem('weatherBuddyData', JSON.stringify(d
 
 // The API supports metric or imperial units, but the user gets to choose metric or imperial so might as well just
 // accept their default units (kelvin and meters/sec)
-const kelvinToFahrenheit = (tempK) => ((tempK - 273.15) * 9) / 5 + 32;
-// const kelvinToCelsius = (tempK) => tempK - 273.15;
-const metricSpeedToMph = (metric) => metric * 2.237;
-
+const convertTemperature = {
+  imperial(tempK) {
+    return `${(((tempK - 273.15) * 9) / 5 + 32).toFixed(2)}°F`;
+  },
+  metric(tempK) {
+    return `${(tempK - 273.15).toFixed(2)}°C`;
+  },
+};
+const convertSpeed = {
+  metric(metric) {
+    return `${metric.toFixed(2)} m/s`;
+  },
+  imperial(metric) {
+    return `${(metric * 2.237).toFixed(2)} mph`;
+  },
+};
 const currentContainer = document.querySelector('#current-weather-container');
 const fiveDayContainer = document.querySelector('#five-day-container');
 const previousSeachesContainer = document.querySelector('#previous-searches-container');
-const apiKeyContainer = document.querySelector('#api-key-container');
-const apiKeyBtn = document.querySelector('#change-api-key');
-const apiKeyPrompt = document.querySelector('#api-key-prompt');
-const apiFormCancel = document.querySelector('#api-form-cancel');
-const apiKeyForm = document.querySelector('#api-key-form');
+const settingsContainer = document.querySelector('#settings-container');
+const settingsBtn = document.querySelector('#settings');
+const settingsCloseBtn = document.querySelector('#settings-close');
+const apiKeyInputEl = document.querySelector('#api-key-input');
+const unitTypeEl = document.querySelector('#unit-type');
 const errorSpan = document.querySelector('#error-span');
 const errorTextEl = document.querySelector('#error-span .error-text');
 
@@ -47,7 +59,7 @@ function renderFiveDay(dailyWeather) {
     const headerEl = el('h3', moment.unix(day.dt).format('MM/DD'));
     const iconEl = el(`i.wi.wi-owm-${day.weather[0].id}.med-icon`);
     const bodyData = {
-      Temperature: `${kelvinToFahrenheit(day.temp.day).toFixed(2)}°F`,
+      Temperature: `${convertTemperature[data.unitType](day.temp.day)}`,
       Humidity: `${day.humidity}%`,
     };
     const bodyEl = renderWeatherCardBody(bodyData);
@@ -58,6 +70,7 @@ function renderFiveDay(dailyWeather) {
 
 function renderWeatherData(locationName, weatherData) {
   const current = weatherData.current;
+  const convTemp = convertTemperature[data.unitType];
   const headerEl = [
     el('h2', locationName),
     el('h3', moment.unix(current.dt).tz(weatherData.timezone).format('MMM DD, hh:mma')),
@@ -67,12 +80,10 @@ function renderWeatherData(locationName, weatherData) {
     : 'night';
   const iconEl = el(`i.wi.wi-owm-${iconPrefix}-${current.weather[0].id}.big-icon`);
   const bodyData = {
-    Temperature: `${kelvinToFahrenheit(current.temp).toFixed(2)}°F (feels like ${kelvinToFahrenheit(
-      current.feels_like
-    ).toFixed(0)}°F)`,
+    Temperature: `${convTemp(current.temp)} (feels like ${convTemp(current.feels_like)}`,
     Humidity: `${current.humidity}%`,
     'Wind Speed': [
-      `${metricSpeedToMph(current.wind_speed).toFixed(2)} MPH`,
+      convertSpeed[data.unitType](current.wind_speed),
       el(`i.wi.wi-wind.from-${current.wind_deg}-deg.wind-icon`),
     ],
     'UV Index': el('span#uv-index', current.uvi),
@@ -204,35 +215,31 @@ function locationBtnClickListener() {
 }
 
 // not hardcoding API keys into something going into a public repository
-function showApiKeyForm() {
-  let prompt;
-  if (!data.apiKey) {
-    prompt = 'No API key found in LocalStorage, enter an API key to continue.';
-    apiFormCancel.classList.add('hide');
+function showSettings() {
+  settingsContainer.classList.remove('hide');
+  if (data.apiKey) {
+    if (apiKeyInputEl.classList.contains('required-field')) apiKeyInputEl.classList.remove('required-field');
+    apiKeyInputEl.value = data.apiKey;
+    unitTypeEl.value = data.unitType;
   } else {
-    prompt = `Current API Key is "${data.apiKey}" -- enter new API key below to change.`;
-    apiFormCancel.classList.remove('hide');
+    apiKeyInputEl.classList.add('required-field');
   }
-  apiKeyPrompt.textContent = prompt;
-  apiKeyContainer.classList.remove('hide');
 }
 
-apiKeyForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const input = event.target.querySelector('#api-key-form input').value.trim();
-  if (input) {
-    data.apiKey = input;
-    saveData();
-    apiKeyContainer.classList.add('hide');
+settingsBtn.addEventListener('click', () => {
+  showSettings();
+});
+settingsCloseBtn.addEventListener('click', () => {
+  if (!apiKeyInputEl.value) {
+    showError('API key cannot be blank.');
+    return;
   }
+  data.apiKey = apiKeyInputEl.value.trim();
+  data.unitType = unitTypeEl.value;
+  saveData();
+  settingsContainer.classList.add('hide');
 });
-apiKeyBtn.addEventListener('click', () => {
-  showApiKeyForm();
-});
-apiFormCancel.addEventListener('click', () => {
-  apiKeyContainer.classList.add('hide');
-});
-if (!data.apiKey) showApiKeyForm();
+if (!data.apiKey) showSettings();
 
 // display location button if browser supports geolocation requests
 if (navigator.geolocation) {

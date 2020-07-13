@@ -80,7 +80,7 @@ function renderWeatherData(locationName, weatherData) {
     : 'night';
   const iconEl = el(`i.wi.wi-owm-${iconPrefix}-${current.weather[0].id}.big-icon`);
   const bodyData = {
-    Temperature: `${convTemp(current.temp)} (feels like ${convTemp(current.feels_like)}`,
+    Temperature: `${convTemp(current.temp)} (feels like ${convTemp(current.feels_like)})`,
     Humidity: `${current.humidity}%`,
     'Wind Speed': [
       convertSpeed[data.unitType](current.wind_speed),

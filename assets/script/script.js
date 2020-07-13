@@ -252,7 +252,7 @@ if (navigator.geolocation) {
 if (data.previousSearches.length > 0) {
   previousSeachesContainer.classList.remove('hide');
   renderPreviousSearches();
-  previousSeachesContainer.addEventListener('click', (event) => {
-    if (data.lastReq[event.target.textContent]) fetchWeatherData(data.lastReq[event.target.textContent].location);
-  });
 }
+previousSeachesContainer.addEventListener('click', (event) => {
+  if (data.lastReq[event.target.textContent]) fetchWeatherData(data.lastReq[event.target.textContent].location);
+});

@@ -122,9 +122,11 @@ async function fetchGeolocation(search) {
     showError(`${response.status}: ${response.statusText}`);
     return;
   } else {
-    if (response.status === 403)
+    if (response.status === 403) {
       // the public endpoint will reject with 403 if it gets too busy
       setTimeout(fetchGeolocation(search), 1000 * Math.ceil(Math.random() * 5));
+      return;
+    }
   }
   const data = await response.json();
   if (data.error) {

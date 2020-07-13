@@ -185,7 +185,7 @@ async function fetchWeatherData(location) {
 function formSubmitHandler(event) {
   event.preventDefault();
   const inputEl = event.target.querySelector('input[type=search]');
-  const input = inputEl.value.trim().replace(/\s/g, ' ');
+  const input = inputEl.value.trim().replace(/\s+/g, ' ');
   inputEl.value = '';
   fetchGeolocation(input).then((location) => fetchWeatherData(location));
 }
